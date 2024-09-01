@@ -182,6 +182,8 @@ K3S_VERSION="${k3s_version}"
 first_instance=$(aws ec2 describe-instances --filters Name=tag-value,Values=k3s-server Name=instance-state-name,Values=running --query 'sort_by(Reservations[].Instances[], &LaunchTime)[:-1].[InstanceId]' --output text | head -n1)
 instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
 
+INSTALL_K3S_SKIP_SELINUX_RPM=true
+
 if [[ "$first_instance" == "$instance_id" ]]; then
   echo "I'm the first yeeee: Cluster init!"
   until (curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=$K3S_VERSION K3S_TOKEN=${k3s_token} sh -s - --cluster-init $INSTALL_PARAMS); do

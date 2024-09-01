@@ -76,6 +76,8 @@ K3S_VERSION=$(curl --silent https://api.github.com/repos/k3s-io/k3s/releases/lat
 K3S_VERSION="${k3s_version}"
 %{ endif }
 
+INSTALL_K3S_SKIP_SELINUX_RPM=true
+
 wait_lb
 
 until (curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=$K3S_VERSION K3S_TOKEN=${k3s_token} K3S_URL=https://${k3s_url}:6443 sh -s - $INSTALL_PARAMS); do

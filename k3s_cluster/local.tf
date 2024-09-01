@@ -1,6 +1,6 @@
 locals {
   k3s_tls_san_public     = var.create_extlb && var.expose_kubeapi ? aws_lb.external_lb[0].dns_name : ""
-  kubeconfig_secret_name = "${var.common_prefix}-kubeconfig-${var.cluster_name}-${var.environment}-v2"
+  kubeconfig_secret_name = "${var.common_prefix}-kubeconfig-${var.cluster_name}-${var.environment}"
   global_tags = {
     environment      = "${var.environment}"
     provisioner      = "terraform"
