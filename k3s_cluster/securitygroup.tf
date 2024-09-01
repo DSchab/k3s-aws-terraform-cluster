@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "ingress_ssh" {
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = [var.my_public_ip_cidr]
+  cidr_blocks       = var.my_public_ip_cidr_list
   security_group_id = aws_security_group.allow_strict.id
 }
 
@@ -73,7 +73,7 @@ resource "aws_security_group_rule" "allow_lb_kubeapi_traffic" {
   from_port         = var.kube_api_port
   to_port           = var.kube_api_port
   protocol          = "tcp"
-  cidr_blocks       = [var.my_public_ip_cidr]
+  cidr_blocks       = var.my_public_ip_cidr_list
   security_group_id = aws_security_group.allow_strict.id
 }
 

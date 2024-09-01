@@ -1,7 +1,7 @@
 resource "aws_launch_template" "k3s_server" {
   name_prefix   = "${var.common_prefix}-k3s-server-tpl-${var.environment}"
   image_id      = var.AMIS[var.AWS_REGION]
-  instance_type = var.default_instance_type
+  instance_type = var.default_master_instance_type
   user_data     = data.cloudinit_config.k3s_server.rendered
 
   iam_instance_profile {

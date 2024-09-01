@@ -54,9 +54,9 @@ variable "vpc_id" {
   description = "The vpc id"
 }
 
-variable "my_public_ip_cidr" {
-  type        = string
-  description = "My public ip CIDR"
+variable "my_public_ip_cidr_list" {
+  type        = list(string)
+  description = "List of public IP CIDRs for which ssh access will be allowed"
 }
 
 variable "install_nginx_ingress" {
@@ -112,6 +112,12 @@ variable "vpc_subnet_cidr" {
 variable "vpc_subnets" {
   type        = list(any)
   description = "The vpc subnets ids"
+}
+
+variable "default_master_instance_type" {
+  type        = string
+  default     = "t3.small"
+  description = "Instance type to be used for the master nodes"
 }
 
 variable "default_instance_type" {

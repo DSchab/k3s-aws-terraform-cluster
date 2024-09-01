@@ -15,7 +15,7 @@ variable "AWS_REGION" {
 module "k3s_cluster" {
   AWS_REGION                = "<change_me>"
   environment               = "staging"
-  my_public_ip_cidr         = "<change_me>"
+  my_public_ip_cidr_list    = ["<change_me>"]
   vpc_id                    = "<change_me>"
   vpc_subnets               = ["<change_me>", "<change_me>", "<change_me>"]
   vpc_subnet_cidr           = "<change_me>"
