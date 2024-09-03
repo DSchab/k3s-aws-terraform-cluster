@@ -87,7 +87,8 @@ edit the main.tf files and set the following variables:
 | `PATH_TO_PRIVATE_KEY` | `no`        | Path to your private ssh key (Default: "~/.ssh/id_rsa) |
 | `default_master_instance_type` | `no` | Default instance type used by the Launch template for the master nodes. Default: t3.small |
 | `default_instance_type` | `no`        | Default instance type used by the Launch template. Default: t3.medium |
-| `instance_types` | `no`        | Array of instances used by the ASG. Dfault: { asg_instance_type_1 = "t3.medium", asg_instance_type_2 = "t3a.medium", asg_instance_type_2 = "c5a.large", asg_instance_type_4 = "c6a.large" } |
+| `master_instance_types` | `no`        | Array of instances used by the ASG.
+| `worker_instance_types` | `no`        | Array of instances used by the ASG. Dfault: { asg_instance_type_1 = "t3.medium", asg_instance_type_2 = "t3a.medium", asg_instance_type_2 = "c5a.large", asg_instance_type_4 = "c6a.large" } |
 | `kube_api_port` | `no`        | Kube api default port Default: 6443|
 | `k3s_server_desired_capacity` | `no`        | Desired number of k3s servers. Default 3 |
 | `k3s_server_min_capacity` | `no`        | Min number of k3s servers: Default 4 |

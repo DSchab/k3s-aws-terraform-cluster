@@ -1,6 +1,6 @@
 resource "aws_autoscaling_group" "k3s_servers_asg" {
   name                      = "${var.common_prefix}-servers-asg-${var.environment}"
-  wait_for_capacity_timeout = "5m"
+  wait_for_capacity_timeout = "10m"
   vpc_zone_identifier       = var.vpc_subnets
 
   lifecycle {
@@ -22,7 +22,7 @@ resource "aws_autoscaling_group" "k3s_servers_asg" {
       }
 
       dynamic "override" {
-        for_each = var.instance_types
+        for_each = var.master_instance_types
         content {
           instance_type     = override.value
           weighted_capacity = "1"
@@ -96,7 +96,7 @@ resource "aws_autoscaling_group" "k3s_workers_asg" {
       }
 
       dynamic "override" {
-        for_each = var.instance_types
+        for_each = var.worker_instance_types
         content {
           instance_type     = override.value
           weighted_capacity = "1"

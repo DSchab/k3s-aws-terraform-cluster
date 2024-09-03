@@ -126,8 +126,18 @@ variable "default_instance_type" {
   description = "Instance type to be used"
 }
 
-variable "instance_types" {
-  description = "List of instance types to use"
+variable "master_instance_types" {
+  description = "List of master instance types to use"
+  type        = map(string)
+  default = {
+    asg_instance_type_1 = "t3.small"
+    asg_instance_type_2 = "t3.medium"
+    asg_instance_type_3 = "t3.large"
+  }
+}
+
+variable "worker_instance_types" {
+  description = "List of worker instance types to use"
   type        = map(string)
   default = {
     asg_instance_type_1 = "t3.medium"
