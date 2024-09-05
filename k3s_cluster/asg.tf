@@ -10,9 +10,9 @@ resource "aws_autoscaling_group" "k3s_servers_asg" {
 
   mixed_instances_policy {
     instances_distribution {
-      on_demand_base_capacity                  = 0
-      on_demand_percentage_above_base_capacity = 20
-      spot_allocation_strategy                 = "capacity-optimized"
+      on_demand_base_capacity                  = 1
+      on_demand_percentage_above_base_capacity = 100
+      spot_allocation_strategy                 = ""
     }
 
     launch_template {
@@ -84,9 +84,9 @@ resource "aws_autoscaling_group" "k3s_workers_asg" {
 
   mixed_instances_policy {
     instances_distribution {
-      on_demand_base_capacity                  = 0
-      on_demand_percentage_above_base_capacity = 20
-      spot_allocation_strategy                 = "capacity-optimized"
+      on_demand_base_capacity                  = 1
+      on_demand_percentage_above_base_capacity = 100
+      spot_allocation_strategy                 = ""
     }
 
     launch_template {
