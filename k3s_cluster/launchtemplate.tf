@@ -1,6 +1,6 @@
 resource "aws_launch_template" "k3s_server" {
   name_prefix   = "${var.common_prefix}-k3s-server-tpl-${var.environment}"
-  image_id      = var.AMIS[var.AWS_REGION]
+  image_id      = var.AMIS[var.aws_region]
   instance_type = var.default_master_instance_type
   user_data     = data.cloudinit_config.k3s_server.rendered
 
@@ -17,10 +17,10 @@ resource "aws_launch_template" "k3s_server" {
     }
   }
 
-  key_name = aws_key_pair.my_ssh_public_key.key_name
+  key_name = var.public_ssh_key_name
 
   network_interfaces {
-    associate_public_ip_address = true
+    associate_public_ip_address = false
     security_groups             = [aws_security_group.allow_strict.id]
   }
 
@@ -39,7 +39,7 @@ resource "aws_launch_template" "k3s_server" {
 
 resource "aws_launch_template" "k3s_worker" {
   name_prefix   = "${var.common_prefix}-k3s-worker-tpl-${var.environment}"
-  image_id      = var.AMIS[var.AWS_REGION]
+  image_id      = var.AMIS[var.aws_region]
   instance_type = var.default_instance_type
   user_data     = data.cloudinit_config.k3s_worker.rendered
 
@@ -56,10 +56,10 @@ resource "aws_launch_template" "k3s_worker" {
     }
   }
 
-  key_name = aws_key_pair.my_ssh_public_key.key_name
+  key_name = var.public_ssh_key_name
 
   network_interfaces {
-    associate_public_ip_address = true
+    associate_public_ip_address = false
     security_groups             = [aws_security_group.allow_strict.id]
   }
 

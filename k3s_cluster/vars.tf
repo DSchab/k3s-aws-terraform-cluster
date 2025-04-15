@@ -1,4 +1,12 @@
-variable "AWS_REGION" {
+variable "aws_region" {
+  type = string
+}
+
+variable "aws_admin_profile" {
+  type = string
+}
+
+variable "aws_infra_profile" {
   type = string
 }
 
@@ -37,16 +45,15 @@ variable "AMIS" {
   }
 }
 
-variable "PATH_TO_PUBLIC_KEY" {
+variable "public_ssh_key_path" {
   type        = string
   default     = "~/.ssh/id_rsa.pub"
-  description = "Path to your public key"
+  description = "Path to a public key, which will be authorized for cluster access."
 }
 
-variable "PATH_TO_PRIVATE_KEY" {
+variable "public_ssh_key_name" {
   type        = string
-  default     = "~/.ssh/id_rsa"
-  description = "Path to your private key"
+  description = "Name of the SSH keypair to use for cluster access."
 }
 
 variable "vpc_id" {
@@ -56,7 +63,7 @@ variable "vpc_id" {
 
 variable "my_public_ip_cidr_list" {
   type        = list(string)
-  description = "List of public IP CIDRs for which ssh access will be allowed"
+  description = "List of public IP CIDRs for which access will be allowed"
 }
 
 variable "install_nginx_ingress" {

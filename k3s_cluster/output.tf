@@ -10,3 +10,19 @@ output "k3s_server_public_ips" {
 output "k3s_workers_public_ips" {
   value = data.aws_instances.k3s_workers.*.public_ips
 }
+
+output "k3s_server_private_ips" {
+  value = data.aws_instances.k3s_servers.*.private_ips
+}
+
+output "k3s_workers_private_ips" {
+  value = data.aws_instances.k3s_workers.*.private_ips
+}
+
+output "k3s_server_instance_ids" {
+  value = data.aws_instances.k3s_servers.*.ids
+}
+
+output "k3s_workers_instance_ids" {
+  value = data.aws_instances.k3s_workers.*.ids
+}

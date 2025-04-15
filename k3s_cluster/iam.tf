@@ -1,4 +1,5 @@
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
+  provider = aws.iam-admin
   name = "${var.common_prefix}-ec2-instance-profile-${var.environment}"
   role = aws_iam_role.aws_ec2_custom_role.name
 
@@ -11,6 +12,7 @@ resource "aws_iam_instance_profile" "ec2_instance_profile" {
 }
 
 resource "aws_iam_role" "aws_ec2_custom_role" {
+  provider = aws.iam-admin
   name = "${var.common_prefix}-ec2-custom-iam-role-${var.environment}"
 
   assume_role_policy = jsonencode({
@@ -37,6 +39,7 @@ resource "aws_iam_role" "aws_ec2_custom_role" {
 }
 
 resource "aws_iam_policy" "cluster_autoscaler" {
+  provider = aws.iam-admin
   name        = "${var.common_prefix}-cluster-autoscaler-policy-${var.environment}"
   path        = "/"
   description = "Cluster autoscaler policy"
@@ -71,6 +74,7 @@ resource "aws_iam_policy" "cluster_autoscaler" {
 }
 
 resource "aws_iam_policy" "aws_efs_csi_driver_policy" {
+  provider = aws.iam-admin
   name        = "${var.common_prefix}-csi-driver-policy-${var.environment}"
   path        = "/"
   description = "AWS EFS CSI driver policy"
@@ -131,6 +135,7 @@ resource "aws_iam_policy" "aws_efs_csi_driver_policy" {
 
 
 resource "aws_iam_policy" "allow_secrets_manager" {
+  provider = aws.iam-admin
   name        = "${var.common_prefix}-secrets-manager-policy-${var.environment}"
   path        = "/"
   description = "Secrets Manager Policy"
@@ -165,86 +170,96 @@ resource "aws_iam_policy" "allow_secrets_manager" {
 }
 
 resource "aws_iam_role_policy_attachment" "attach_ec2_ro_policy" {
+  provider = aws.iam-admin
   role       = aws_iam_role.aws_ec2_custom_role.name
   policy_arn = data.aws_iam_policy.AmazonEC2ReadOnlyAccess.arn
 }
 
 resource "aws_iam_role_policy_attachment" "attach_ssm_policy" {
+  provider = aws.iam-admin
   role       = aws_iam_role.aws_ec2_custom_role.name
   policy_arn = data.aws_iam_policy.AmazonSSMManagedInstanceCore.arn
 }
 
 resource "aws_iam_role_policy_attachment" "attach_cluster_autoscaler_policy" {
+  provider = aws.iam-admin
   role       = aws_iam_role.aws_ec2_custom_role.name
   policy_arn = aws_iam_policy.cluster_autoscaler.arn
 }
 
 resource "aws_iam_role_policy_attachment" "attach_aws_efs_csi_driver_policy" {
+  provider = aws.iam-admin
   role       = aws_iam_role.aws_ec2_custom_role.name
   policy_arn = aws_iam_policy.aws_efs_csi_driver_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "attach_allow_secrets_manager_policy" {
+  provider = aws.iam-admin
   role       = aws_iam_role.aws_ec2_custom_role.name
   policy_arn = aws_iam_policy.allow_secrets_manager.arn
 }
 
 ## Lambda
+# Only needed to clean up spot instances, which we don't use.
 
-resource "aws_iam_role" "kube_cleaner_lambda_role" {
-  name               = "${var.common_prefix}-kube-cleaner-iam-role-${var.environment}"
-  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role_policy.json
-  tags = merge(
-    local.global_tags,
-    {
-      "Name" = lower("${var.common_prefix}-kube-cleaner-iam-role-${var.environment}")
-    }
-  )
-}
+# resource "aws_iam_role" "kube_cleaner_lambda_role" {
+#   provider = aws.iam-admin
+#   name               = "${var.common_prefix}-kube-cleaner-iam-role-${var.environment}"
+#   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role_policy.json
+#   tags = merge(
+#     local.global_tags,
+#     {
+#       "Name" = lower("${var.common_prefix}-kube-cleaner-iam-role-${var.environment}")
+#     }
+#   )
+# }
 
-resource "aws_iam_role_policy_attachment" "kube_cleaner_lambda_attachment" {
-  role       = aws_iam_role.kube_cleaner_lambda_role.name
-  policy_arn = aws_iam_policy.kube_cleaner_lambda_policy.arn
-}
+# resource "aws_iam_role_policy_attachment" "kube_cleaner_lambda_attachment" {
+#   provider = aws.iam-admin
+#   role       = aws_iam_role.kube_cleaner_lambda_role.name
+#   policy_arn = aws_iam_policy.kube_cleaner_lambda_policy.arn
+# }
 
-resource "aws_iam_role_policy_attachment" "attach_lambda_vpc_policy" {
-  role       = aws_iam_role.kube_cleaner_lambda_role.name
-  policy_arn = data.aws_iam_policy.AWSLambdaVPCAccessExecutionRole.arn
-}
+# resource "aws_iam_role_policy_attachment" "attach_lambda_vpc_policy" {
+#   provider = aws.iam-admin
+#   role       = aws_iam_role.kube_cleaner_lambda_role.name
+#   policy_arn = data.aws_iam_policy.AWSLambdaVPCAccessExecutionRole.arn
+# }
 
-resource "aws_iam_policy" "kube_cleaner_lambda_policy" {
-  name        = "${var.common_prefix}-kube-cleaner-policy-${var.environment}"
-  description = "Policy for kube_cleaner_lambda_policy"
+# resource "aws_iam_policy" "kube_cleaner_lambda_policy" {
+#   provider = aws.iam-admin
+#   name        = "${var.common_prefix}-kube-cleaner-policy-${var.environment}"
+#   description = "Policy for kube_cleaner_lambda_policy"
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "secretsmanager:GetSecretValue",
-          "secretsmanager:UpdateSecret",
-          "secretsmanager:DeleteSecret",
-          "secretsmanager:DescribeSecret",
-          "secretsmanager:ListSecrets",
-          "secretsmanager:CreateSecret",
-          "secretsmanager:PutSecretValue",
-          "sqs:SendMessage",
-          "sqs:ReceiveMessage",
-          "sqs:DeleteMessage",
-          "sqs:GetQueueAttributes"
-        ],
-        Resource = [
-          "*"
-        ]
-      }
-    ]
-  })
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow"
+#         Action = [
+#           "secretsmanager:GetSecretValue",
+#           "secretsmanager:UpdateSecret",
+#           "secretsmanager:DeleteSecret",
+#           "secretsmanager:DescribeSecret",
+#           "secretsmanager:ListSecrets",
+#           "secretsmanager:CreateSecret",
+#           "secretsmanager:PutSecretValue",
+#           "sqs:SendMessage",
+#           "sqs:ReceiveMessage",
+#           "sqs:DeleteMessage",
+#           "sqs:GetQueueAttributes"
+#         ],
+#         Resource = [
+#           "*"
+#         ]
+#       }
+#     ]
+#   })
 
-  tags = merge(
-    local.global_tags,
-    {
-      "Name" = lower("${var.common_prefix}-kube-cleaner-policy-${var.environment}")
-    }
-  )
-}
+#   tags = merge(
+#     local.global_tags,
+#     {
+#       "Name" = lower("${var.common_prefix}-kube-cleaner-policy-${var.environment}")
+#     }
+#   )
+# }
